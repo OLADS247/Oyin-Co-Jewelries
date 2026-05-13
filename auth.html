@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account – Tomi Packaging</title>
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+<div class="auth-wrapper">
+
+  <div class="auth-box">
+    <a href="index.html" class="back-home">← Back to shop</a>
+    <h2>Welcome back 👋</h2>
+    <p class="subtitle">Sign in to continue shopping</p>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="tab active" data-tab="login">Login</button>
+      <button class="tab" data-tab="register">Register</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form class="auth-form active" id="login">
+      <input type="email" placeholder="Email address" required>
+      <input type="password" placeholder="Password" required>
+
+      <div class="form-row">
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="primary-btn">Login</button>
+    </form>
+
+    <!-- REGISTER -->
+    <form class="auth-form" id="register">
+      <input type="text" placeholder="Full name" required>
+      <input type="email" placeholder="Email address" required>
+      <input type="password" placeholder="Password" required>
+
+      <button type="submit" class="primary-btn">Create account</button>
+    </form>
+
+    <p class="guest-text">
+      You can continue shopping without an account.
+    </p>
+  </div>
+
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>
