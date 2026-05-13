@@ -9,7 +9,7 @@ This project showcases a clean shopping experience for a jewelry brand, featurin
 ## 🚀 Live Demo
 
 🔗 Vercel Deployment:  
-[Insert Your Vercel Link Here]
+[oyin-co-jewelries.vercel.app]
 
 ---
 
