@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .checkout-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 25px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .checkout-container h2, .checkout-container h3 {
+      text-align: center;
+      color: #333;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    #orderSummary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    .checkout-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .checkout-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .checkout-btn:hover:not(:disabled) {
+      background: #45a049;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    @media (max-width: 500px) {
+      .checkout-container {
+        margin: 20px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+    <!-- ================= HEADER ================= -->
+<header class="main-header">
+  <div class="container">
+    <div class="logo">Oyin & Co.<span>Jewelries</span></div>
+
+    <div class="search-box">
+      <input type="text" placeholder="Search for products">
+      <button>🔍</button>
+    </div>
+
+    <button class="menu-toggle" id="menuToggle">☰</button>
+
+    <nav class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Shop</a>
+      <a href="auth.html">Login / Register</a>
+      <a href="#">♡</a>
+      <!-- <a href="#" class="cart">🛒 <span class="badge">0</span></a> -->
+       <a href="cart.html" class="cart">🛒 <span class="badge">0</span></a>
+
+    </nav>
+  </div>
+</header>
+
+  <div class="checkout-container">
+    <h2>Checkout</h2>
+
+    <!-- Customer Info -->
+    <form id="checkoutForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="John Doe" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address</label>
+        <textarea id="address" placeholder="123 Main St, Lagos, Nigeria" required></textarea>
+      </div>
+
+      <h3>Order Summary</h3>
+      <div id="orderSummary">
+        <!-- Dynamic cart items will be displayed here -->
+      </div>
+
+      <button type="button" class="checkout-btn" id="payBtn">Pay Now</button>
+    </form>
+  </div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+  // ----- LOAD CART ITEMS FROM CART PAGE -----
+  let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+  const summaryDiv = document.getElementById("orderSummary");
+  const payBtn = document.getElementById("payBtn");
+
+  function renderOrderSummary() {
+    summaryDiv.innerHTML = "";
+
+    if(cartItems.length === 0){
+      summaryDiv.innerHTML = "<p>Your cart is empty.</p>";
+      payBtn.disabled = true;
+      return;
+    }
+
+    let total = 0;
+    cartItems.forEach((item, index) => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "order-item";
+      itemDiv.innerHTML = `<span>${item.name} x ${item.quantity}</span><span>₦${itemTotal}</span>`;
+      summaryDiv.appendChild(itemDiv);
+    });
+
+    const totalDiv = document.createElement("div");
+    totalDiv.className = "order-item";
+    totalDiv.style.fontWeight = "bold";
+    totalDiv.innerHTML = `<span>Total</span><span>₦${total}</span>`;
+    summaryDiv.appendChild(totalDiv);
+
+    payBtn.disabled = false;
+  }
+
+  renderOrderSummary();
+
+  // ----- PAYSTACK INTEGRATION -----
+  function payWithPaystack() {
+    const email = document.getElementById("email").value.trim();
+    if(!email){
+      alert("Please enter your email!");
+      return;
+    }
+
+    const totalAmountKobo = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0) * 100;
+
+    var handler = PaystackPop.setup({
+      key: 'YOUR_PUBLIC_KEY', // Replace with your Paystack public key
+      email: email,
+      amount: totalAmountKobo,
+      currency: 'NGN',
+      ref: '' + Math.floor(Math.random() * 1000000000 + 1),
+      callback: function(response){
+        alert('Payment successful. Transaction ref: ' + response.reference);
+        saveOrderToBackend(response.reference);
+      },
+      onClose: function(){
+        alert('Payment cancelled.');
+      }
+    });
+    handler.openIframe();
+  }
+
+  function saveOrderToBackend(reference) {
+    const orderData = {
+      customer: {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        address: document.getElementById("address").value
+      },
+      cart: cartItems,
+      transactionRef: reference
+    };
+
+    console.log("Send this order to backend:", orderData);
+    alert("Order details saved successfully! (Simulated)");
+  }
+
+  // Attach Paystack payment to button
+  payBtn.addEventListener("click", payWithPaystack);
+
+  function updateCartBadge() {
+  const badge = document.querySelector(".cart .badge");
+  if (!badge) return;
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  badge.textContent = totalItems;
+}
+
+// ----- INITIAL RENDER -----
+renderCart();
+
+// ----- CHECKOUT BUTTON -----
+document.getElementById("checkoutBtn").addEventListener("click", () => {
+  // Save cart array (not DOM) for checkout page
+  localStorage.setItem("cartItems", JSON.stringify(cart));
+  window.location.href = "checkout.html";
+});
+
+
+</script>
+
+</body>
+</html>

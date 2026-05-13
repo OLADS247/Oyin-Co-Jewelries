@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- ================= HEADER ================= -->
+<header class="main-header">
+  <div class="container">
+    <div class="logo">Oyin & Co.<span>Jewelries</span></div>
+
+    <div class="search-box">
+      <input type="text" placeholder="Search for products">
+      <button>🔍</button>
+    </div>
+
+    <button class="menu-toggle" id="menuToggle">☰</button>
+
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="#">Shop</a>
+      <a href="auth.html">Login / Register</a>
+      <a href="#">♡</a>
+      <!-- <a href="#" class="cart">🛒 <span class="badge">0</span></a> -->
+       <a href="cart.html" class="cart">🛒 <span class="badge">0</span></a>
+
+    </nav>
+  </div>
+</header>
+
+
+
+<h1 style="padding:20px;">Your Cart</h1>
+
+<div class="cart-container" style="padding:20px;">
+  <table width="100%" border="1" cellpadding="10">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="cartItems"></tbody>
+  </table>
+
+  <h2 id="cartTotal" style="margin-top:20px;">Total: ₦0</h2>
+</div>
+<button id="checkoutBtn">Proceed to Checkout</button>
+<script src="js/cart.js"></script>
+</body>
+</html>
